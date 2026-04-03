@@ -1,25 +1,44 @@
 import numpy as np
-import gradio as gr
+import streamlit as st
 
+st.set_page_config(page_title="Expense Tracker", layout="centered")
 
-def generate_expenses(n_days):
-    n_days = int(n_days)
+st.title("💰 Expense Tracker Dashboard")
 
+st.write("Analyze your daily spending using NumPy-powered analytics.")
+
+# -------------------------------
+# Generate Expenses
+# -------------------------------
+st.header("📅 Generate Expenses")
+
+n_days = st.number_input("Number of Days", min_value=1, value=30)
+
+if st.button("Generate Expenses"):
     categories_list = np.array(
         ["Food", "Transport", "Shopping", "Bills", "Entertainment"]
     )
 
-    days = np.array([f"Day {i+1}" for i in range(n_days)])
-    expenses = np.random.randint(100, 2001, size=n_days)
-    categories = np.random.choice(categories_list, size=n_days)
+    days = np.array([f"Day {i+1}" for i in range(int(n_days))])
+    expenses = np.random.randint(100, 2001, size=int(n_days))
+    categories = np.random.choice(categories_list, size=int(n_days))
 
     data = np.column_stack((days, expenses, categories))
 
-    return data, data
+    st.session_state["data"] = data
 
+# Display Table
+if "data" in st.session_state:
+    st.subheader("📋 Expense Table")
+    st.dataframe(st.session_state["data"], use_container_width=True)
+
+
+# -------------------------------
+# Summary
+# -------------------------------
+st.header("📊 Expense Summary")
 
 def expense_summary(data):
-    data = np.array(data)
     expenses = data[:, 1].astype(float)
 
     total = np.sum(expenses)
@@ -31,118 +50,89 @@ def expense_summary(data):
 
     above_avg = np.sum(expenses > avg)
 
-    return f"""
-### 📊 Expense Summary
+    return total, avg, highest_day, highest_amount, above_avg
 
-**Total Spending:** ₹{total:.2f}  
-**Average Daily Spending:** ₹{avg:.2f}  
 
----
+if st.button("Compute Summary"):
+    if "data" not in st.session_state:
+        st.error("Generate data first!")
+    else:
+        data = st.session_state["data"]
 
-**Highest Spending Day:**  
-{highest_day} — ₹{highest_amount:.2f}
+        total, avg, highest_day, highest_amount, above_avg = expense_summary(data)
 
----
+        st.write(f"**Total Spending:** ₹{total:.2f}")
+        st.write(f"**Average Daily Spending:** ₹{avg:.2f}")
 
-**Days Above Average:** {above_avg}
-"""
+        st.write("---")
+        st.write(f"**Highest Spending Day:** {highest_day} — ₹{highest_amount:.2f}")
 
+        st.write("---")
+        st.write(f"**Days Above Average:** {above_avg}")
+
+
+# -------------------------------
+# Category Breakdown
+# -------------------------------
+st.header("🗂 Category Breakdown")
 
 def category_breakdown(data):
-    data = np.array(data)
     categories = data[:, 2]
     expenses = data[:, 1].astype(float)
 
     unique = np.unique(categories)
-
-    result = "### 🗂 Category Breakdown\n\n"
-    totals = []
+    totals = {}
 
     for cat in unique:
-        total = np.sum(expenses[categories == cat])
-        totals.append(total)
-        result += f"**{cat}** — ₹{total:.2f}\n\n"
+        totals[cat] = np.sum(expenses[categories == cat])
 
-    totals = np.array(totals)
+    highest = max(totals, key=totals.get)
+    lowest = min(totals, key=totals.get)
 
-    highest = unique[np.argmax(totals)]
-    lowest = unique[np.argmin(totals)]
+    return totals, highest, lowest
 
-    result += "---\n\n"
-    result += f"**Highest Spending Category:** {highest}\n\n"
-    result += f"**Lowest Spending Category:** {lowest}"
 
-    return result
+if st.button("Analyze Categories"):
+    if "data" not in st.session_state:
+        st.error("Generate data first!")
+    else:
+        data = st.session_state["data"]
 
+        totals, highest, lowest = category_breakdown(data)
+
+        for cat, val in totals.items():
+            st.write(f"**{cat}** — ₹{val:.2f}")
+
+        st.write("---")
+        st.write(f"**Highest Spending Category:** {highest}")
+        st.write(f"**Lowest Spending Category:** {lowest}")
+
+
+# -------------------------------
+# High Spending Filter
+# -------------------------------
+st.header("🔥 High Spending Days")
+
+threshold = st.number_input("Threshold (₹)", value=1500)
 
 def high_spending(data, threshold):
-    data = np.array(data)
     expenses = data[:, 1].astype(float)
     days = data[:, 0]
 
-    threshold = float(threshold)
-
     mask = expenses > threshold
-    filtered_days = days[mask]
-    filtered_expenses = expenses[mask]
-
-    result = "### 🔥 High Spending Days\n\n"
-
-    if len(filtered_days) == 0:
-        return result + "No days exceeded the threshold."
-
-    for d, e in zip(filtered_days, filtered_expenses):
-        result += f"{d} — ₹{e:.2f}\n"
-
-    return result
+    return days[mask], expenses[mask]
 
 
-with gr.Blocks(title="Expense Tracker") as demo:
+if st.button("Find High Spending Days"):
+    if "data" not in st.session_state:
+        st.error("Generate data first!")
+    else:
+        data = st.session_state["data"]
 
-    gr.Markdown(
-        """
-        # 💰 Expense Tracker Dashboard
-        Analyze your monthly spending using NumPy-powered analytics.
-        """
-    )
+        filtered_days, filtered_expenses = high_spending(data, threshold)
 
-    data_state = gr.State()
-
-    with gr.Row():
-        days_input = gr.Number(value=30, label="Number of Days")
-        generate_btn = gr.Button("Generate Expenses", variant="primary")
-
-    expense_table = gr.Dataframe(
-        headers=["Day", "Expense (₹)", "Category"],
-        interactive=False
-    )
-
-    generate_btn.click(
-        generate_expenses,
-        inputs=days_input,
-        outputs=[expense_table, data_state]
-    )
-
-    gr.Markdown("---")
-
-    with gr.Tab("📊 Summary"):
-        summary_btn = gr.Button("Compute Summary", variant="primary")
-        summary_output = gr.Markdown()
-        summary_btn.click(expense_summary, inputs=data_state, outputs=summary_output)
-
-    with gr.Tab("🗂 Categories"):
-        category_btn = gr.Button("Analyze Categories", variant="primary")
-        category_output = gr.Markdown()
-        category_btn.click(category_breakdown, inputs=data_state, outputs=category_output)
-
-    with gr.Tab("🔥 High Spending"):
-        threshold_input = gr.Number(value=1500, label="Threshold (₹)")
-        high_btn = gr.Button("Find High Spending Days", variant="primary")
-        high_output = gr.Markdown()
-        high_btn.click(
-            high_spending,
-            inputs=[data_state, threshold_input],
-            outputs=high_output
-        )
-
-demo.launch(theme=gr.themes.Soft())
+        if len(filtered_days) == 0:
+            st.warning("No days exceeded the threshold.")
+        else:
+            for d, e in zip(filtered_days, filtered_expenses):
+                st.write(f"{d} — ₹{e:.2f}")
