@@ -1,71 +1,139 @@
-# 💰 Expense Tracker Dashboard
+# 💰 Expense Tracker Dashboard (Streamlit)
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![NumPy](https://img.shields.io/badge/NumPy-Analytics-green)
-![Gradio](https://img.shields.io/badge/Gradio-Interactive%20UI-orange)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+<p align="center">
 
-An interactive dashboard built using **NumPy** for analytics and **Gradio** for the user interface.
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-red?logo=streamlit)
+![NumPy](https://img.shields.io/badge/NumPy-Enabled-orange?logo=numpy)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-This project demonstrates real-world data analysis concepts including filtering, aggregation, ranking, and category-based breakdown using vectorized NumPy operations.
+<!-- Replace with your deployed link -->
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20App-brightgreen?logo=rocket)](https://s2sxvkbgxfnrbq2mnpahmc.streamlit.app/)
+
+</p>
 
 ---
 
-## 🚀 Project Overview
+## 🚀 Overview
 
-The **Expense Tracker Dashboard** simulates daily expenses and provides:
+An interactive **Expense Tracker Web App** built with **Streamlit** and **NumPy** that simulates and analyzes daily spending patterns.
 
-- 📥 Expense data generation
-- 📊 Statistical summary
-- 🗂 Category-based analysis
-- 🔥 High-spending day detection
-- 🌐 Interactive web dashboard
-
-The project focuses on strengthening NumPy fundamentals while building a clean, functional UI.
+This project demonstrates practical data analysis, category insights, and financial tracking in a clean UI.
 
 ---
 
 ## ✨ Features
 
-### 📥 Data Generation
-- Generate expenses for *N* days
-- Random daily spending (₹100 – ₹2000)
-- Random expense categories:
-  - Food
-  - Transport
-  - Shopping
-  - Bills
-  - Entertainment
-
-### 📊 Expense Summary
-- Total spending
-- Average daily spending
-- Highest spending day
-- Number of days above average
-
-### 🗂 Category Breakdown
-- Total spending per category
-- Highest spending category
-- Lowest spending category
-
-### 🔥 High Spending Filter
-- Filter days above a custom threshold
-- Identify top spending days
+* 📅 Generate daily expenses
+* 📊 Total & average spending analysis
+* 📈 Identify highest spending day
+* 🗂 Category-wise breakdown
+* 🔥 Detect high spending days
+* ⚡ Interactive UI with Streamlit
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose |
-|------------|----------|
-| 🐍 Python | Core programming language |
-| 🧮 NumPy | Data processing & analytics |
-| 🌐 Gradio | Interactive dashboard UI |
+* Python 3.x
+* Streamlit
+* NumPy
 
 ---
 
-## 👤 Author 
+## 📂 Project Structure
 
-Chinmay V Chatradamath
+```bash
+.
+├── app.py
+├── requirements.txt
+├── README.md
+```
 
 ---
+
+## ⚙️ Installation
+
+```bash
+git clone https://github.com/your-username/expense-tracker-dashboard.git
+cd expense-tracker-dashboard
+pip install -r requirements.txt
+```
+
+---
+
+## ▶️ Run Locally
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## 🌐 Live Demo
+
+👉 Click the badge above or visit:
+https://your-streamlit-app-link.streamlit.app
+
+---
+
+## 🧠 Functionality
+
+### 📅 Expense Generation
+
+* Simulates daily expenses
+* Random category assignment
+
+### 📊 Summary Analysis
+
+* Total spending
+* Average daily expense
+* Highest spending day
+* Days above average
+
+### 🗂 Category Breakdown
+
+* Total spend per category
+* Highest & lowest category
+
+### 🔥 High Spending Detection
+
+* Filters days exceeding a threshold
+
+---
+
+## 🚀 Deployment (Streamlit Cloud)
+
+1. Push code to GitHub
+2. Go to https://streamlit.io/cloud
+3. Click **New App**
+4. Select repo & `app.py`
+5. Deploy 🎉
+
+---
+
+## 🔮 Future Improvements
+
+* 📊 Add visual charts (pie chart, bar graph)
+* 💾 Export reports (CSV/PDF)
+* 📱 Mobile-friendly layout
+* 📉 Monthly trend analysis
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome!
+
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+## ⭐ Support
+
+If you like this project, give it a ⭐ on GitHub!
